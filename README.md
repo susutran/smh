@@ -1,1 +1,1 @@
-# smh
+# small molecule hit pipeline
