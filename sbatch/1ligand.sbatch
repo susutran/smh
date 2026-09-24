@@ -1,14 +1,16 @@
 #!/bin/bash
-#
 #SBATCH --time=00:10:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=susunt2_smh_dev
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --job-name=smh_1ligand
 #SBATCH --account=rgmullen-chbe-eng
-#SBATCH --partition=secondary
-#SBATCH --output=/u/susunt2/scratch/smh/%j/myjob.o%j
-#SBATCH --error=/u/susunt2/scratch/smh/%j/myjob.e%j
-#
+#SBATCH --partition=eng-research-gpu
+#SBATCH --output=/u/susunt2/smh/logs/1ligand-%j.out
+#SBATCH --error=/u/susunt2/smh/logs/1ligand-%j.err
 
-mkdir -p /u/susunt2/scratch/smh/${SLURM_JOB_ID}
-python3 src/1ligands.py "$1"
+REPO="${SMH_REPO:-/u/susunt2/smh}"
+PREP_SIF="${SMH_PREP_SIF:-/scratch/susunt2/prep.sif}"
+
+apptainer exec "$PREP_SIF" python3 "$REPO/src/1ligands.py" "$1"

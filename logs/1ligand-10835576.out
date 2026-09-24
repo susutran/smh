@@ -1,0 +1,6 @@
+host: ccc0315.campuscluster.illinois.edu
+cwd: /u/susunt2/smh
+python: 3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]
+SLURM_NTASKS: 1
+SLURM_JOB_ID: 10835576
+input file: data/dev_smiles.txt

@@ -1,0 +1,9 @@
+Bootstrap: docker
+From: condaforge/miniforge3:latest
+
+%post
+    conda install -y -c conda-forge python=3.11 rdkit openbabel meeko
+    conda clean -afy
+
+%runscript
+    exec "$@"
