@@ -1,0 +1,11 @@
+{
+  "center_x": 31.278,
+  "center_y": -1.5,
+  "center_z": 25.213,
+  "size_x": 19.026,
+  "size_y": 14.35,
+  "size_z": 20.885,
+  "source": "autobox:AIH pad=4.0",
+  "receptor": "1XP1_receptor.pdb",
+  "input": "1XP1.cif"
+}

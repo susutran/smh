@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=01:00:00
-#SBATCH --output=logs/1ligand-%A_%a.out
-#SBATCH --error=logs/1ligand-%A_%a.err
+#SBATCH --output=logs/1ligand-%j.out
+#SBATCH --error=logs/1ligand-%j.err
 #
 # Stage 1: SMILES -> 3D conformers (SDF)
 #
@@ -23,7 +23,7 @@
 
 set -euo pipefail
 
-REPO="${SMH_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+REPO="${SMH_REPO:-${SLURM_SUBMIT_DIR:-$PWD}}"
 PREP_SIF="${SMH_PREP_SIF:-$REPO/containers/prep.sif}"
 
 if [[ $# -lt 1 ]]; then

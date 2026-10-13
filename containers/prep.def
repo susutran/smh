@@ -18,6 +18,7 @@ From: condaforge/miniforge3:latest
         openbabel=3.2.1 \
         meeko=0.8.0 \
         numpy=2.4.6
+    pip install --no-cache-dir posebusters==0.6.5
     conda clean -afy
 
 %environment

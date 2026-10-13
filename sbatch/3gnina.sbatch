@@ -8,8 +8,8 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
-#SBATCH --output=logs/3gnina-%A_%a.out
-#SBATCH --error=logs/3gnina-%A_%a.err
+#SBATCH --output=logs/3gnina-%j.out
+#SBATCH --error=logs/3gnina-%j.err
 #
 # Stage 3: GPU docking with GNINA.
 #
@@ -21,7 +21,7 @@
 
 set -euo pipefail
 
-REPO="${SMH_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+REPO="${SMH_REPO:-${SLURM_SUBMIT_DIR:-$PWD}}"
 GNINA_SIF="${SMH_GNINA_SIF:-$REPO/containers/gnina.sif}"
 
 if [[ $# -lt 3 ]]; then
