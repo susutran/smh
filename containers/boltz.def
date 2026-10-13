@@ -1,0 +1,57 @@
+Bootstrap: docker
+From: condaforge/miniforge3:latest
+
+# Stage 5: Boltz-2 co-folding validation. GPU.
+#
+# The CUDA runtime comes from pip's torch wheels, so no CUDA base image is
+# needed -- the host driver is reached through --nv at runtime.
+#
+# MODEL WEIGHTS ARE NOT IN THIS CONTAINER. They are downloaded on first run
+# into $BOLTZ_CACHE and must live somewhere persistent. Baking them in would
+# make the image enormous and force a full rebuild on every model update.
+# See sbatch/5boltz_prefetch.sbatch.
+#
+# Build (CPU node is fine; ~10 GB RAM, expect 20-40 min and a large image):
+#   export APPTAINER_CACHEDIR=/scratch/$USER/.apptainer
+#   export APPTAINER_TMPDIR=/tmp/$USER-build && mkdir -p $APPTAINER_TMPDIR
+#   apptainer build --ignore-fakeroot-command boltz.sif boltz.def
+#
+# Verify (GPU node):
+#   apptainer exec --nv boltz.sif boltz --help
+#   apptainer exec --nv boltz.sif python3 -c "import torch; print(torch.cuda.is_available())"
+#
+# UNPINNED: boltz and torch versions are not pinned because this has not been
+# built here yet. After the first successful build, run
+#   apptainer exec boltz.sif pip list | grep -Ei 'boltz|torch|numpy'
+# and pin them, the way containers/prep.def pins its packages. Until then this
+# recipe is NOT reproducible.
+
+%post
+    set -e
+    conda install -y -c conda-forge python=3.11
+    pip install --no-cache-dir "boltz[cuda]"
+    python3 -c "import boltz, torch; print('import check ok', torch.__version__)"
+    conda clean -afy
+
+%environment
+    export PYTHONNOUSERSITE=1
+    # Overridden at runtime by the sbatch wrapper; this is only a fallback.
+    export BOLTZ_CACHE=/u/susunt2/boltz_cache
+
+%runscript
+    exec "$@"
+
+%labels
+    Maintainer susunt2
+    Pipeline   smh
+    Stage      boltz
+    Validated  UNVERIFIED
+
+%help
+    Boltz-2 co-folding for the smh pipeline (stage 5).
+
+    Weights live outside the container in $BOLTZ_CACHE. Bind that directory
+    and set the variable:
+
+      apptainer exec --nv --bind /u/susunt2/boltz_cache:/cache \
+          boltz.sif env BOLTZ_CACHE=/cache boltz predict input.fasta
