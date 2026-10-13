@@ -1,0 +1,36 @@
+# Containers -- multi-GB, rebuilt from the .def recipes in containers/
+*.sif
+*.simg
+*-sandbox/
+
+# SLURM output
+logs/
+*.o[0-9]*
+*.e[0-9]*
+slurm-*.out
+
+# Pipeline outputs
+out/
+results/
+*_prepped*.sdf
+*.failed.txt
+
+# Large inputs -- keep dev_smiles.txt, exclude full tranches
+data/tranches/
+data/*.smi
+!data/dev_smiles.txt
+
+# Apptainer build leftovers
+.apptainer/
+build-temp-*/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+
+# Editor / OS
+.vscode-server/
+.DS_Store
+*.swp

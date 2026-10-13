@@ -1,0 +1,37 @@
+Bootstrap: docker
+From: condaforge/miniforge3:latest
+
+# CPU-side ligand/protein prep for the smh pipeline.
+# Pinned to versions validated 2026-10-13 on UIUC Campus Cluster.
+#
+# Build (CPU node):
+#   export APPTAINER_CACHEDIR=/scratch/$USER/.apptainer
+#   export APPTAINER_TMPDIR=/tmp/$USER-build && mkdir -p $APPTAINER_TMPDIR
+#   apptainer build --ignore-fakeroot-command prep.sif prep.def
+#
+# ~400 MB. ~16 GB RAM to build. No GPU.
+
+%post
+    conda install -y -c conda-forge \
+        python=3.11.16 \
+        rdkit=2026.03.6 \
+        openbabel=3.2.1 \
+        meeko=0.8.0 \
+        numpy=2.4.6
+    conda clean -afy
+
+%environment
+    export PYTHONNOUSERSITE=1
+
+%runscript
+    exec "$@"
+
+%labels
+    Maintainer susunt2
+    Pipeline   smh
+    Stage      prep
+    Validated  2026-10-13
+
+%help
+    Ligand and protein prep for the smh docking pipeline.
+    Usage: apptainer exec prep.sif python3 src/1ligands.py data/dev_smiles.txt
